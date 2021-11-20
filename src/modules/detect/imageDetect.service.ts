@@ -4,7 +4,6 @@ import * as faceapi from 'face-api.js';
 import * as path from 'path';
 import fetch from 'node-fetch';
 
-const modelsPath = 'http://localhost:3000/weights';
 const minConfidence = 0.5;
 const { Canvas, Image, ImageData } = canvas;
 // @ts-ignore
