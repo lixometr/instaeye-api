@@ -1,4 +1,6 @@
-import '@tensorflow/tfjs-node';
+if (process.env.NODE_ENV !== 'development') {
+  require('@tensorflow/tfjs-node');
+}
 import * as canvas from 'canvas';
 import * as faceapi from 'face-api.js';
 import * as path from 'path';
@@ -21,7 +23,7 @@ export class ImageDetect {
     );
   }
   async detect(imagePath: string) {
-    const img = await canvas.loadImage( path.resolve(__dirname, '../../../public/images/1.jpeg'));
+    const img = await canvas.loadImage(imagePath);
     const detections = await faceapi
       .detectSingleFace(
         // @ts-ignore
