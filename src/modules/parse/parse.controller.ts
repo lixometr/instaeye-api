@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { ParseService } from './parse.service';
 
 @Controller('parse')
@@ -9,7 +10,10 @@ export class ParseController {
     return this.parseService.test();
   }
   @Get(':username')
-  parseAccount(@Param('username') username: string) {
+  parseAccount(@Param('username') username: string, @Req() req: Request) {
+    
+    return req.headers;
+
     return this.parseService.parseAccount(username);
   }
   @Post('crowd')

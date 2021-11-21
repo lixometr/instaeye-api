@@ -1,3 +1,4 @@
+import { ParseAccountLoginStrategy } from './strategy/parse-account-login/parse-account-login.strategy';
 import { CreateAccountDto } from './../account/dto/create-account.dto';
 import { AccountService } from './../account/account.service';
 import { ParseFetchService } from './parse-fetch.service';
@@ -25,9 +26,10 @@ export class ParseService {
     private parseFetch: ParseFetchService,
     private parseAccountStrategy: ParseAccountInfoStrategy,
     private accountService: AccountService,
+    private parseAccountLogin: ParseAccountLoginStrategy
   ) {}
   async test() {
-    return this.getAccountInfo('mdualizm');
+    return this.parseAccountLogin.login()
   }
   async parse() {
     // await getAccountInfo()
