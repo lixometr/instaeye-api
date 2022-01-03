@@ -17,7 +17,30 @@ export class AccountService {
     const createdAccount = new this.accountModel(createAccountDto);
     return createdAccount.save();
   }
-  async find() {
-    return this.accountModel.find();
+  async find(query: any, page: number) {
+    const perPage = 25;
+    page = page >= 1 ? page : 1;
+
+    page = page - 1;
+    const items = await this.accountModel
+      .find(query)
+      .limit(perPage)
+      .skip(perPage * page);
+    const total = await this.accountModel.countDocuments(query);
+    return {
+      data: items,
+      meta: {
+        perPage,
+        total,
+      },
+    };
+  }
+  async like(id: string) {
+    const item = await this.accountModel.findById(id);
+    item.likes++;
+    return await item.save();
+  }
+  async remove(id: string) {
+    return this.accountModel.deleteOne({ _id: id });
   }
 }

@@ -5,6 +5,9 @@ export type AccountDocument = Account & Document;
 
 @Schema()
 export class Account {
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
   @Prop()
   name?: string;
 
@@ -21,7 +24,8 @@ export class Account {
   age?: number;
 
   @Prop()
-  gender?: string;
+  // 1 - male, 2 - female, 0 - unknown
+  gender?: number;
 
   @Prop()
   description?: string;

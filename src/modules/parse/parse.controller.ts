@@ -9,15 +9,42 @@ export class ParseController {
   parse() {
     return this.parseService.test();
   }
-  @Get(':username')
+  @Get('account/:username')
   parseAccount(@Param('username') username: string, @Req() req: Request) {
-    
-    return req.headers;
+    // console.log(req.headers);
+    // return req.headers;
 
     return this.parseService.parseAccount(username);
   }
   @Post('crowd')
   parseCrowd(@Body('items') items: string[]) {
     return this.parseService.crowd(items);
+  }
+
+  @Post('start')
+  parseStart() {
+    this.parseService.parseStart();
+    return 'ok';
+  }
+  @Post('pause')
+  parsePause() {
+    return this.parseService.parsePause();
+  }
+  @Post('continue')
+  parseContinue() {
+    return this.parseService.parseContinue();
+  }
+  @Post('clear')
+  parseClear() {
+    return this.parseService.parseClear();
+  }
+  @Get('count')
+  getCount() {
+    return this.parseService.getCount();
+  }
+
+  @Post('add')
+  parseAdd(@Body() data: any) {
+    return this.parseService.parseAdd(data);
   }
 }

@@ -1,5 +1,5 @@
+import { ParseClientService } from './../../parse-client.service';
 import { DetectService } from './../../../detect/detect.service';
-import { ParseFetchService } from './../../parse-fetch.service';
 import { accountExtractor } from './parse-account-info.extractor';
 
 import { urlAccountInfo } from '../../parse-url';
@@ -8,11 +8,11 @@ import { logger } from 'src/helpers/logger';
 @Injectable()
 export class ParseAccountInfoStrategy {
   constructor(
-    private parseFetch: ParseFetchService,
+    private client: ParseClientService,
     private detectService: DetectService,
   ) {}
   async fetch(username: string) {
-    const response = await this.parseFetch.fetch(urlAccountInfo(username));
+    const response = await this.client.exec('getUserByUsername', { username });
     return response;
   }
   // add text blacklist word filter and
@@ -21,7 +21,6 @@ export class ParseAccountInfoStrategy {
     logger.info('Fetching ' + username);
     const response = await this.fetch(username);
     logger.info('Fetched ' + username);
-
     const result = this.extract(response);
     logger.info('Start analyze photo ' + username);
     const photoInfo = await this.analyzePhotos(result);
@@ -44,7 +43,7 @@ export class ParseAccountInfoStrategy {
     let activePhoto = -1;
     let location = {};
     let info = await this.getAgeAndGender(result.photo);
-    logger.info('First photo info', info);
+    logger.info('First photo info ' + info);
     for (let i = 0; i < result.gallery.length; i++) {
       const currentPhoto = result.gallery[i];
       if (!currentPhoto) continue;
@@ -70,7 +69,7 @@ export class ParseAccountInfoStrategy {
     return this.detectService.detect(photo);
   }
   extract(response: any) {
-    const result = accountExtractor(response.graphql.user);
+    const result = accountExtractor(response);
     return result;
   }
 }

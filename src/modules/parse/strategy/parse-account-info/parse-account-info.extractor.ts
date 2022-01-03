@@ -17,6 +17,7 @@ export const accountExtractor = (user: any) => {
   const postsCount = galleryInfo.count;
   const photosArr = galleryInfo.edges || [];
   const gallery = accountGalleryExtracter(photosArr);
+  const userId = user.id;
   return {
     postsCount,
     gallery,
@@ -31,5 +32,6 @@ export const accountExtractor = (user: any) => {
     categoryName,
     isPrivate,
     username,
+    userId,
   };
 };

@@ -1,13 +1,17 @@
 import { ParseAccountLoginStrategy } from './strategy/parse-account-login/parse-account-login.strategy';
 import { CreateAccountDto } from './../account/dto/create-account.dto';
 import { AccountService } from './../account/account.service';
-import { ParseFetchService } from './parse-fetch.service';
 import { DetectService } from './../detect/detect.service';
 
 import { urlAccountInfo } from './parse-url';
 import { Injectable } from '@nestjs/common';
 import { ParseAccountInfoStrategy } from './strategy/parse-account-info/parse-account-info.strategy';
 import { logger } from 'src/helpers/logger';
+import * as fs from 'fs';
+import * as path from 'path';
+import { ParseClientService } from './parse-client.service';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 /**
  * account info by username
  * account photos
@@ -23,17 +27,32 @@ import { logger } from 'src/helpers/logger';
 export class ParseService {
   constructor(
     private readonly detectService: DetectService,
-    private parseFetch: ParseFetchService,
     private parseAccountStrategy: ParseAccountInfoStrategy,
     private accountService: AccountService,
-    private parseAccountLogin: ParseAccountLoginStrategy
+    private parseAccountLogin: ParseAccountLoginStrategy,
+    private client: ParseClientService,
+    @InjectQueue('parse-accounts') private accountsQueue: Queue,
   ) {}
   async test() {
-    return this.parseAccountLogin.login()
+    return this.parseAccountLogin.exec();
   }
-  async parse() {
-    // await getAccountInfo()
-    // return res;
+  async parseStart() {
+    const startAccounts: string[] = await new Promise((resolve) => {
+      fs.readFile(
+        path.join(__dirname, '..', '..', '..', 'data', 'start-accounts.json'),
+        (err, result) => {
+          resolve(JSON.parse(result.toString()));
+        },
+      );
+    });
+    for (let i = 0; i < startAccounts.length; i++) {
+      const account = startAccounts[i];
+      if (typeof account === 'string') {
+        await this.accountsQueue.add({ username: account });
+      } else {
+        await this.accountsQueue.add(account);
+      }
+    }
   }
 
   async crowd(usernames: string[]) {
@@ -56,17 +75,17 @@ export class ParseService {
     const isExist = await this.accountService.isExist(username);
     if (isExist) {
       logger.info(`Account exists ${username}`);
-      return 0;
+      return 1;
     }
     const info = await this.getAccountInfo(username);
     if (!info.isAllowed) {
       logger.info(`END Parsing account ${username}`);
-      return 0;
+      return info;
     }
     logger.info(`Creating record ${username}`);
     await this.createAccount(info.result);
     logger.info(`END Parsing account ${username}`);
-    return true;
+    return info;
   }
   async createAccount(accountInfo) {
     const toCreate: CreateAccountDto = {
@@ -76,10 +95,32 @@ export class ParseService {
       photo: accountInfo.photo,
       gallery: accountInfo.gallery.map((item) => item.url),
       age: accountInfo.age,
-      gender: accountInfo.gender,
+      gender: accountInfo.gender && accountInfo.gender === 'male' ? 1 : 2,
       description: accountInfo.description,
       location: accountInfo.location,
     };
     return await this.accountService.create(toCreate);
+  }
+  async parsePause() {
+    await this.accountsQueue.pause();
+    logger.info('<Parse pause>');
+    return true;
+  }
+  async parseContinue() {
+    await this.accountsQueue.resume();
+    logger.info('<Parse resume>');
+    return true;
+  }
+  async getCount() {
+    return this.accountsQueue.getJobCounts();
+  }
+  async parseClear() {
+    await this.accountsQueue.empty();
+    logger.info('<Parse clear>');
+    return true;
+  }
+  async parseAdd(item) {
+    logger.info('<Parse add> ' + JSON.stringify(item));
+    return this.accountsQueue.add(item);
   }
 }

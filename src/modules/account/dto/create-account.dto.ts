@@ -9,7 +9,7 @@ export class CreateAccountDto {
 
   age?: number;
 
-  gender?: string;
+  gender?: number;
 
   description?: string;
 
