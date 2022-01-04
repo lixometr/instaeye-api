@@ -22,7 +22,8 @@ export class ProxyController {
     const queryString = qs.stringify(query);
     const fullPath = path + '?' + queryString;
     const { host, port, username, password } =
-      await this.innerProxyService.getImageProxy();
+      await this.innerProxyService.getImageProxy
+      ();
     // @ts-ignore
     const httpsAgent = new HttpsProxyAgent({
       host: host,

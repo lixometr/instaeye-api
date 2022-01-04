@@ -21,11 +21,7 @@ export class ParseController {
     return this.parseService.crowd(items);
   }
 
-  @Post('start')
-  parseStart() {
-    this.parseService.parseStart();
-    return 'ok';
-  }
+
   @Post('pause')
   parsePause() {
     return this.parseService.parsePause();

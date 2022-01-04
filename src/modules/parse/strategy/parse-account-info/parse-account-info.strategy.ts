@@ -17,7 +17,7 @@ export class ParseAccountInfoStrategy {
   }
   // add text blacklist word filter and
   async exec(username: string) {
-    logger.info(`START <ParseAccountInfoStrategy> for ${username}`);
+    // logger.info(`START <ParseAccountInfoStrategy> for ${username}`);
     logger.info('Fetching ' + username);
     const response = await this.fetch(username);
     logger.info('Fetched ' + username);
@@ -28,7 +28,7 @@ export class ParseAccountInfoStrategy {
     const textAnalyze = this.analyzeTexts(result);
     const fullResult = { ...result, ...photoInfo };
     const isAllowed = this.isAllowed(fullResult);
-    logger.info(`END <ParseAccountInfoStrategy> Allowed: ${isAllowed}`);
+    // logger.info(`END <ParseAccountInfoStrategy> Allowed: ${isAllowed}`);
     return {
       isAllowed,
       result: fullResult,
@@ -43,7 +43,6 @@ export class ParseAccountInfoStrategy {
     let activePhoto = -1;
     let location = {};
     let info = await this.getAgeAndGender(result.photo);
-    logger.info('First photo info ' + info);
     for (let i = 0; i < result.gallery.length; i++) {
       const currentPhoto = result.gallery[i];
       if (!currentPhoto) continue;

@@ -34,11 +34,13 @@ export class ParseConsumer {
       followers: getFollowers = true,
       followings: getFollowings = false,
       deep = 0,
+      maxDeep = -1,
     } = job.data;
     let info: any = await this.parseService.parseAccount(username);
     const queueCount = await this.accountsQueue.count();
     logger.info('<Queue count> ' + queueCount);
     if (queueCount > 500) return;
+    if (maxDeep > -1 && deep >= maxDeep) return;
     if (info === 1) {
       const response = await this.parseAccountStrategy.fetch(username);
       info = { result: this.parseAccountStrategy.extract(response) } as any;
@@ -61,7 +63,11 @@ export class ParseConsumer {
       }
 
       toAdd.forEach((fol: IFollower) => {
-        this.accountsQueue.add({ username: fol.username, deep: deep + 1 });
+        this.accountsQueue.add({
+          username: fol.username,
+          deep: deep + 1,
+          maxDeep,
+        });
       });
     }
   }
@@ -75,6 +81,5 @@ export class ParseConsumer {
   }
 
   @OnQueueError()
-  onQueueError(err) {
-  }
+  onQueueError(err) {}
 }

@@ -21,7 +21,6 @@ import { InnerAccountModule } from '../inner-account/inner-account.module';
     }),
     forwardRef(() => InnerAccountModule),
     forwardRef(() => InnerProxyModule),
-    ConfigModule,
   ],
   controllers: [ParseController],
   providers: [

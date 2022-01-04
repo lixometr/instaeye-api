@@ -7,6 +7,7 @@ import { UpdateInnerProxyDto } from './dto/update-inner-proxy.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { InnerAccountService } from '../inner-account/inner-account.service';
+import { config } from 'src/config/config';
 
 @Injectable()
 export class InnerProxyService {
@@ -14,7 +15,6 @@ export class InnerProxyService {
     @InjectModel(InnerProxy.name)
     private proxyModel: Model<InnerProxyDocument>,
     private innerAccountService: InnerAccountService,
-    private configService: ConfigService
   ) {}
   async create(createInnerProxyDto: CreateInnerProxyDto) {
     const proxy = new this.proxyModel(createInnerProxyDto);
@@ -29,8 +29,7 @@ export class InnerProxyService {
     return proxy;
   }
   async getImageProxy() {
-    return this.configService.get('imageProxy')
-
+    return config.imageProxy;
   }
   async findAll() {
     return this.proxyModel.find();

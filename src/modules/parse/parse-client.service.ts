@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { ConfigService } from '@nestjs/config';
 import { InnerProxyService } from './../inner-proxy/inner-proxy.service';
 import { InnerAccountService } from './../inner-account/inner-account.service';
@@ -15,7 +16,6 @@ export class ParseClientService {
     private innerAccountService: InnerAccountService,
     @Inject(forwardRef(() => InnerProxyService))
     private innerProxyService: InnerProxyService,
-    private configService: ConfigService,
   ) {}
   async init() {
     try {
@@ -32,7 +32,7 @@ export class ParseClientService {
         { proxy: proxyUrl },
       );
       try {
-        if (!this.configService.get('allowNoAuthParse')) {
+        if (!config.allowNoAuthParse) {
           const profile = await this.client.getProfile();
           if (!profile) {
             throw null;

@@ -13,13 +13,9 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bull';
 import { InnerAccountModule } from './modules/inner-account/inner-account.module';
-import { APP_FILTER } from '@nestjs/core';
-import configuration from './config/configuration';
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [configuration],
-    }),
+    ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),

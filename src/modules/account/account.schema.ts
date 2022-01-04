@@ -8,10 +8,10 @@ export class Account {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ index: 'text' })
   name?: string;
 
-  @Prop({ index: true, required: true, unique: true })
+  @Prop({ index: 'text', required: true, unique: true })
   username: string;
 
   @Prop()
@@ -27,13 +27,13 @@ export class Account {
   // 1 - male, 2 - female, 0 - unknown
   gender?: number;
 
-  @Prop()
+  @Prop({ index: 'text'})
   description?: string;
 
   @Prop()
   followers: number;
 
-  @Prop({ type: Object })
+  @Prop({ type: Object, index: 'text' })
   location?: object;
 
   @Prop({ default: 0 })

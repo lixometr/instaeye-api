@@ -36,24 +36,6 @@ export class ParseService {
   async test() {
     return this.parseAccountLogin.exec();
   }
-  async parseStart() {
-    const startAccounts: string[] = await new Promise((resolve) => {
-      fs.readFile(
-        path.join(__dirname, '..', '..', '..', 'data', 'start-accounts.json'),
-        (err, result) => {
-          resolve(JSON.parse(result.toString()));
-        },
-      );
-    });
-    for (let i = 0; i < startAccounts.length; i++) {
-      const account = startAccounts[i];
-      if (typeof account === 'string') {
-        await this.accountsQueue.add({ username: account });
-      } else {
-        await this.accountsQueue.add(account);
-      }
-    }
-  }
 
   async crowd(usernames: string[]) {
     const start = new Date().getTime();

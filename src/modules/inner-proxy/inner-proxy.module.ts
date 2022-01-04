@@ -12,7 +12,6 @@ import { InnerAccountModule } from '../inner-account/inner-account.module';
       { name: InnerProxy.name, schema: InnerProxySchema },
     ]),
     forwardRef(() => InnerAccountModule),
-    ConfigModule
   ],
 
   controllers: [InnerProxyController],
