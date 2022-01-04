@@ -1,3 +1,4 @@
+import { logger } from 'src/helpers/logger';
 import { ConfigModule } from '@nestjs/config';
 import { InnerProxyModule } from './../inner-proxy/inner-proxy.module';
 import { ParseConsumer } from './parse.consumer';
@@ -9,8 +10,10 @@ import { DetectModule } from './../detect/detect.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { ParseService } from './parse.service';
 import { ParseController } from './parse.controller';
-import { BullModule } from '@nestjs/bull';
+import { BullModule, InjectQueue } from '@nestjs/bull';
 import { InnerAccountModule } from '../inner-account/inner-account.module';
+import { Queue } from 'bull';
+import * as cluster from 'cluster';
 
 @Module({
   imports: [
@@ -33,8 +36,14 @@ import { InnerAccountModule } from '../inner-account/inner-account.module';
   exports: [ParseClientService],
 })
 export class ParseModule {
-  constructor(private readonly client: ParseClientService) {}
+  constructor(
+    private readonly client: ParseClientService,
+    @InjectQueue('parse-accounts') private accountsQueue: Queue,
+  ) {}
   async onModuleInit() {
     await this.client.init();
+    if (process.env.isFacade) {
+      this.accountsQueue.pause(true);
+    }
   }
 }

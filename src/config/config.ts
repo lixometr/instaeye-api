@@ -11,4 +11,5 @@ export const config = {
   cookiesPath: path.join(projectBasePath, 'cookies.json'),
   errorLogPath: path.join(projectBasePath, 'error.log'),
   infoLogPath: path.join(projectBasePath, 'info.log'),
+  useClaster: true,
 };

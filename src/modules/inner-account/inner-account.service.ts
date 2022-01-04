@@ -13,7 +13,8 @@ import { UpdateInnerAccountDto } from './dto/update-inner-account.dto';
 import { InnerAccount } from './inner-account.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
+import * as fs from 'fs';
+import { config } from 'src/config/config';
 @Injectable()
 export class InnerAccountService {
   constructor(
@@ -50,6 +51,7 @@ export class InnerAccountService {
     }
     account.isActive = true;
     await account.save();
+    await this.removeCookies()
     logger.info('<Changed account to> ' + JSON.stringify(account.toJSON()));
     return true;
   }
@@ -72,6 +74,17 @@ export class InnerAccountService {
     }
     return account;
   }
+  async removeCookies() {
+    return new Promise((resolve, reject) => {
+      fs.unlink(config.cookiesPath, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve('done');
+      });
+    });
+  }
   async makeActive(id: string) {
     const account = await this.accountModel.findById(id);
     if (account.isActive) return id;
@@ -79,6 +92,8 @@ export class InnerAccountService {
     await this.disableActiveAccount();
     account.isActive = true;
     await account.save();
+    await this.removeCookies()
+
     await this.parseClientService.init();
 
     return id;

@@ -38,6 +38,10 @@ export class ParseController {
   getCount() {
     return this.parseService.getCount();
   }
+  @Get('status')
+  getStatus() {
+    return this.parseService.getStatus();
+  }
 
   @Post('add')
   parseAdd(@Body() data: any) {

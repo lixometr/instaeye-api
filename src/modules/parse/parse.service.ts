@@ -105,4 +105,8 @@ export class ParseService {
     logger.info('<Parse add> ' + JSON.stringify(item));
     return this.accountsQueue.add(item);
   }
+  async getStatus() {
+    const isPaused = await this.accountsQueue.isPaused();
+    return !isPaused ? 'active' : 'pause';
+  }
 }

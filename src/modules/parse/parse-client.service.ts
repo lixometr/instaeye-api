@@ -20,7 +20,7 @@ export class ParseClientService {
   async init() {
     try {
       logger.info('<Client start init>');
-      this.cookieStore = new FileCookieStore('./cookies.json');
+      this.cookieStore = new FileCookieStore(config.cookiesPath);
       const creds = await this.innerAccountService.getActiveAccount();
       const proxyUrl = await this.innerProxyService.getProxyUrl();
       this.client = new Instagram(
@@ -81,7 +81,6 @@ export class ParseClientService {
         // }
       }
       await this.innerAccountService.changeActiveAccount(err);
-      fs.unlinkSync('./cookies.json');
       await this.init();
     }
   }
