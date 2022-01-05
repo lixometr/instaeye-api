@@ -39,7 +39,7 @@ export class ParseClientService {
           }
         }
 
-        logger.info('<Client init success>');
+        logger.info('<Client init success> using ' + creds.username);
       } catch (err) {
         logger.info('<Client init fail>');
         await this.onError({});
@@ -55,34 +55,46 @@ export class ParseClientService {
 
    */
   async onError(err) {
-    try {
-      console.log(err);
+    console.log(err);
+    // check is it logined
+    const profile = await this.client.getProfile();
+    if (profile) {
+      // was logined when error happened
+      await this.limitError(err);
+    } else {
+      // wasn't logined
       const { authenticated } = await this.client.login();
       if (!authenticated) {
-        throw null;
+        await this.onLoginError(err);
+      } else {
+        logger.info('<Client login success>');
       }
-      logger.info('<Client login success>');
-    } catch (err) {
-      console.log('Login Error', err);
-      if (err && typeof err === 'object' && err.statusCode) {
-        logger.error('<Client Login Error> ' + err.statusCode);
-        if (err.statusCode === 400) {
-          // Maybe need sms approve or email approve
-          // Write somewhere that this account needs approvement and approve through browser
-        }
-        if (err.statusCode === 429) {
-          // Proxy banned for many attempts or account for many invalid logins
-          // Choose another one
-        }
-        // if (err.statusCode === 429) {
-        // await this.dataProvider.changeProxyAndAccount();
-        // } else {
-        //   await this.dataProvider.changeAccount();
-        // }
-      }
-      await this.innerAccountService.changeActiveAccount(err);
-      await this.init();
     }
+  }
+
+  async limitError(err) {
+    logger.error(
+      `<Limit Error> ${err.statusCode} - ${JSON.stringify(err.error)}`,
+    );
+    await this.innerAccountService.changeActiveAccount(err);
+    await this.init();
+  }
+  async onLoginError(err) {
+    if (err && typeof err === 'object' && err.statusCode) {
+      logger.error(
+        `<Client Login Error> ${err.statusCode} - ${JSON.stringify(err.error)}`,
+      );
+      if (err.statusCode === 400) {
+        // Maybe need sms approve or email approve
+        // Write somewhere that this account needs approvement and approve through browser
+      }
+      if (err.statusCode === 429) {
+        // Proxy banned for many attempts or account for many invalid logins
+        // Choose another one
+      }
+    }
+    await this.innerAccountService.changeActiveAccount(err);
+    await this.init();
   }
   async exec(methodName: string, ...args: any[]) {
     try {

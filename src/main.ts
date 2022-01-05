@@ -1,5 +1,5 @@
-import { logger } from 'src/helpers/logger';
 require('dotenv').config();
+import { logger } from 'src/helpers/logger';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -12,7 +12,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
-  if (process.env.isFacade) {
+  if (process.env.isFacade || !config.useClaster) {
     await app.listen(port);
     console.log('running on ' + port);
   } else {

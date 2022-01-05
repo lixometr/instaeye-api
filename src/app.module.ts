@@ -22,6 +22,7 @@ import { InnerAccountModule } from './modules/inner-account/inner-account.module
     BullModule.forRoot({
       defaultJobOptions: {
         removeOnComplete: true,
+        removeOnFail: true,
       },
       redis: {
         host: 'localhost',

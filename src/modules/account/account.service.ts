@@ -24,6 +24,7 @@ export class AccountService {
     page = page - 1;
     const items = await this.accountModel
       .find(query)
+      .sort({ createdAt: -1 })
       .limit(perPage)
       .skip(perPage * page);
     const total = await this.accountModel.countDocuments(query);

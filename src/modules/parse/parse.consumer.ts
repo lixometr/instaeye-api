@@ -1,3 +1,4 @@
+import { config } from 'src/config/config';
 import { NoAccountsException } from './../../helpers/exceptions/no-accounts.exception';
 import { NoProxyException } from './../../helpers/exceptions/no-proxy.exception';
 import { ParseAccountInfoStrategy } from './strategy/parse-account-info/parse-account-info.strategy';
@@ -39,7 +40,7 @@ export class ParseConsumer {
     let info: any = await this.parseService.parseAccount(username);
     const queueCount = await this.accountsQueue.count();
     logger.info('<Queue count> ' + queueCount);
-    if (queueCount > 500) return;
+    if (queueCount > config.accountsQueueLimit) return;
     if (maxDeep > -1 && deep >= maxDeep) return;
     if (info === 1) {
       const response = await this.parseAccountStrategy.fetch(username);
