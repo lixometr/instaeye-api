@@ -3,10 +3,10 @@ import * as path from 'path';
 const projectBasePath = path.join(__dirname, '..', '..');
 export const config = {
   imageProxy: {
-    host: '130.255.172.127',
-    port: 30010,
-    username: 'lixometr_gmail_com',
-    password: 'cc7a41a160',
+    host: process.env.IMAGE_PROXY_HOST || '83.171.235.39',
+    port: process.env.IMAGE_PROXY_PORT || 30010,
+    username: process.env.IMAGE_PROXY_USERNAME || 'lixometr_gmail_com',
+    password: process.env.IMAGE_PROXY_PASSWORD || 'cc7a41a160',
   },
   allowNoAuthParse: true,
   cookiesPath: path.join(projectBasePath, 'cookies.json'),
