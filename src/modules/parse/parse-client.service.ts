@@ -55,20 +55,24 @@ export class ParseClientService {
 
    */
   async onError(err) {
-    console.log(err);
+    // console.log(err);
     // check is it logined
-    const profile = await this.client.getProfile();
-    if (profile) {
-      // was logined when error happened
-      await this.limitError(err);
-    } else {
-      // wasn't logined
-      const { authenticated } = await this.client.login();
-      if (!authenticated) {
-        await this.onLoginError(err);
+    try {
+      const profile = await this.client.getProfile();
+      if (profile) {
+        // was logined when error happened
+        throw err;
       } else {
-        logger.info('<Client login success>');
+        // wasn't logined
+        const { authenticated } = await this.client.login();
+        if (!authenticated) {
+          await this.onLoginError(err);
+        } else {
+          logger.info('<Client login success>');
+        }
       }
+    } catch (err) {
+      await this.limitError(err);
     }
   }
 
