@@ -62,7 +62,7 @@ export class ParseAccountInfoStrategy {
   }
   async analyzePhotos(result: ParseAccountExtractedResult) {
     let activePhoto = -1;
-    let location = undefined;
+    let location = '';
     let info = await this.getAgeAndGender(result.photo);
     for (let i = 0; i < result.gallery.length; i++) {
       const currentPhoto = result.gallery[i];
@@ -75,13 +75,13 @@ export class ParseAccountInfoStrategy {
       }
 
       if (currentPhoto.location) {
-        if (!Object.keys(location).length) {
+        if (!location) {
           location = currentPhoto.location;
         } else {
           // location?.name === currentPhoto.location.name;
         }
       }
-      if (Object.keys(location).length && info) break;
+      if (location && info) break;
     }
     return { ...info, activePhoto, location };
   }
