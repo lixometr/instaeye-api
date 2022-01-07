@@ -1,29 +1,24 @@
+import { ParseAccountGalleryItem } from './../../types/parse-account-extracted-result.type';
+
 export enum UserPhotoImageType {
   'GraphSidecar' = 'GraphSidecar',
   'GraphImage' = 'GraphVideo',
   'GraphVideo' = 'GraphVideo',
 }
-export const accountPhotoExtracter = (photo: any) => {
+export const accountPhotoExtracter = (photo: any): ParseAccountGalleryItem => {
   const url = photo.display_url;
   const likes = photo.edge_liked_by.count;
   const type = photo.__typename;
   // id, name, slug
   const locationInfo = photo.location;
   const locationName = locationInfo?.name;
-  const locationSlug = locationInfo?.slug;
-  const locationId = locationInfo?.id;
-  let locationData = undefined;
-  if (locationInfo) {
-    locationData = {
-      name: locationName,
-      slug: locationSlug,
-      id: locationId,
-    };
-  }
+  // const locationSlug = locationInfo?.slug;
+  // const locationId = locationInfo?.id;
+
   return {
     url,
     likes,
-    location: locationData,
+    location: locationName,
   };
 };
 export const accountGalleryExtracter = (photos: any[]) => {

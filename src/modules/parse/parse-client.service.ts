@@ -72,6 +72,9 @@ export class ParseClientService {
         }
       }
     } catch (err) {
+      // proxy error - try again 
+      if(err?.error.code === 'ECONNRESET') return
+      if(err?.statusCode === 404) throw new Error('Account unavailable')
       await this.limitError(err);
     }
   }

@@ -9,7 +9,7 @@ export class DetectService {
     if (detections) {
       return {
         age: Math.round(detections.age),
-        gender: detections.gender,
+        gender: detections.gender && detections.gender === 'male' ? 1 : 2,
       };
     } else {
       return null;

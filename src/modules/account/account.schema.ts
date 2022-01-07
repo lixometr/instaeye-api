@@ -27,14 +27,14 @@ export class Account {
   // 1 - male, 2 - female, 0 - unknown
   gender?: number;
 
-  @Prop({ index: 'text'})
+  @Prop({ index: 'text' })
   description?: string;
 
   @Prop()
   followers: number;
 
-  @Prop({ type: Object, index: 'text' })
-  location?: object;
+  @Prop({ index: 'text' })
+  location?: string;
 
   @Prop({ default: 0 })
   likes: number;

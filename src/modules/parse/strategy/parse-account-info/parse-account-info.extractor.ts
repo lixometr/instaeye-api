@@ -1,6 +1,7 @@
+import { ParseAccountExtractedResult } from '../../types/parse-account-extracted-result.type';
 import { accountGalleryExtracter } from './parse-account-photo.extracter';
 
-export const accountExtractor = (user: any) => {
+export const accountExtractor = (user: any): ParseAccountExtractedResult => {
   const username = user.username;
   const description = user.biography;
   const followers = user.edge_followed_by?.count;

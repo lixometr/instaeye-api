@@ -1,3 +1,4 @@
+import { ParseAccountTextStrategy } from './strategy/parse-account-text/parse-account-text.strategy';
 import { logger } from 'src/helpers/logger';
 import { ConfigModule } from '@nestjs/config';
 import { InnerProxyModule } from './../inner-proxy/inner-proxy.module';
@@ -32,6 +33,7 @@ import * as cluster from 'cluster';
     ParseAccountInfoStrategy,
     ParseAccountLoginStrategy,
     ParseConsumer,
+    ParseAccountTextStrategy,
   ],
   exports: [ParseClientService],
 })

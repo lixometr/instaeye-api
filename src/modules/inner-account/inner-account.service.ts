@@ -31,7 +31,7 @@ export class InnerAccountService {
     logger.info('<Change account>');
     // choose another active account
     const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 3);
+    cutoff.setHours(cutoff.getHours() - 5);
     const account = await this.accountModel.findOne({
       $or: [
         {

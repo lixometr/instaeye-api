@@ -1,4 +1,6 @@
-import { ParseAccountLoginStrategy } from './strategy/parse-account-login/parse-account-login.strategy';
+import { ParseAccountFullResult } from './types/parse-account-full-result.type';
+import { ParseAccountExtractedResult } from './types/parse-account-extracted-result.type';
+import { ParseAccountTextStrategy } from './strategy/parse-account-text/parse-account-text.strategy';
 import { CreateAccountDto } from './../account/dto/create-account.dto';
 import { AccountService } from './../account/account.service';
 import { DetectService } from './../detect/detect.service';
@@ -29,12 +31,17 @@ export class ParseService {
     private readonly detectService: DetectService,
     private parseAccountStrategy: ParseAccountInfoStrategy,
     private accountService: AccountService,
-    private parseAccountLogin: ParseAccountLoginStrategy,
     private client: ParseClientService,
+    private textStrategy: ParseAccountTextStrategy,
     @InjectQueue('parse-accounts') private accountsQueue: Queue,
   ) {}
   async test() {
-    return this.parseAccountLogin.exec();
+    const toTest = {
+      description: `люблю трахаться можно 
+         21 y o
+        ad  `
+    } as ParseAccountExtractedResult
+    return this.textStrategy.exec(toTest);
   }
 
   async crowd(usernames: string[]) {
@@ -69,7 +76,7 @@ export class ParseService {
     logger.info(`END Parsing account ${username}`);
     return info;
   }
-  async createAccount(accountInfo) {
+  async createAccount(accountInfo: ParseAccountFullResult) {
     const toCreate: CreateAccountDto = {
       name: accountInfo.name,
       followers: accountInfo.followers,
@@ -77,7 +84,7 @@ export class ParseService {
       photo: accountInfo.photo,
       gallery: accountInfo.gallery.map((item) => item.url),
       age: accountInfo.age,
-      gender: accountInfo.gender && accountInfo.gender === 'male' ? 1 : 2,
+      gender: accountInfo.gender,
       description: accountInfo.description,
       location: accountInfo.location,
     };
