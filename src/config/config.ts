@@ -13,5 +13,5 @@ export const config = {
   errorLogPath: path.join(projectBasePath, 'error.log'),
   infoLogPath: path.join(projectBasePath, 'info.log'),
   useClaster: process.env.USE_CLASTER ? JSON.parse(process.env.USE_CLASTER) : true,
-  accountsQueueLimit: 500
+  accountsQueueLimit: process.env.ACCOUNT_QUEUE_LIMIT ? parseInt(process.env.ACCOUNT_QUEUE_LIMIT) : 1000
 };
