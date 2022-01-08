@@ -8,10 +8,10 @@ export class Account {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
-  @Prop({ index: 'text' })
+  @Prop()
   name?: string;
 
-  @Prop({ index: 'text', required: true, unique: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop()
@@ -27,13 +27,13 @@ export class Account {
   // 1 - male, 2 - female, 0 - unknown
   gender?: number;
 
-  @Prop({ index: 'text' })
+  @Prop()
   description?: string;
 
   @Prop()
   followers: number;
 
-  @Prop({ index: 'text' })
+  @Prop()
   location?: string;
 
   @Prop({ default: 0 })
@@ -41,3 +41,9 @@ export class Account {
 }
 
 export const AccountSchema = SchemaFactory.createForClass(Account);
+AccountSchema.index({
+  name: 'text',
+  description: 'text',
+  username: 'text',
+  location: 'text',
+});
