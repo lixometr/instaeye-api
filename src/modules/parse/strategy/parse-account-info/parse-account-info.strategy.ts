@@ -48,6 +48,10 @@ export class ParseAccountInfoStrategy {
     let isAllowed = textResult.isAllowed && allowResult;
     if (textResult.age) result.age = textResult.age;
     if (textResult.location) result.location = textResult.location;
+    if(photoResult.activePhoto > -1) {
+      result.photo = result.gallery[photoResult.activePhoto].url
+      result.gallery.splice(photoResult.activePhoto, 1)
+    }
     return {
       isAllowed,
       result,
